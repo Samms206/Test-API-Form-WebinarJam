@@ -20,42 +20,28 @@ export default async function handler(req, res) {
         const { first_name, email } = body
 
         const response = await fetch(
-            "https://api.webinarjam.com/webinarjam",
+            "https://api.webinarjam.com/webinarjam/register",
             {
                 method: "POST",
                 headers: {
                     "Content-Type":
                         "application/x-www-form-urlencoded",
                 },
-
                 body: new URLSearchParams({
                     api_key: process.env.WEBINARJAM_API_KEY,
-                    member_id: "329839",
                     webinar_id: "16",
-                    webinar_hash: "kkl3wi7",
+                    schedule: "16", // 🔥 dari hasil kamu
                     first_name,
                     email,
-                    // INI WAJIB UNTUK REGISTER
-                    action: "register",
                 }),
             }
         )
 
-        const text = await response.text()
+        const data = await response.json()
 
-        let data
-        try {
-            data = JSON.parse(text)
-        } catch {
-            data = text
-        }
-
-        return res.status(200).json({
-            raw: data,
-        })
+        return res.status(200).json(data)
     } catch (err) {
         console.error(err)
-
         return res.status(500).json({
             error: "Server error",
         })
