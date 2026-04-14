@@ -1,0 +1,9 @@
+{
+  "name": "webinarjam-proxy",
+  "version": "1.0.0",
+  "description": "Vercel Proxy untuk bypass CORS WebinarJam",
+  "main": "api/register.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
