@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method !== "POST") {
-        return res.status(405).json({ error: "Only POST allowed" })
+        return res.status(405).json({ error: "POST only" })
     }
 
     try {
@@ -17,39 +17,42 @@ export default async function handler(req, res) {
                 ? JSON.parse(req.body)
                 : req.body
 
-        const { webinar_id, first_name, email } = body
-
-        if (!webinar_id || !first_name || !email) {
-            return res.status(400).json({
-                error: "Missing fields",
-            })
-        }
-
-        const apiKey = process.env.WEBINARJAM_API_KEY
+        const { first_name, email } = body
 
         const response = await fetch(
             "https://api.webinarjam.com/webinarjam",
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type":
+                        "application/x-www-form-urlencoded",
                 },
-                body: JSON.stringify({
-                    api_key: apiKey,
 
-                    // ACTION WAJIB (ini yang sering dilupakan)
-                    method: "register",
-
-                    webinar_id,
+                body: new URLSearchParams({
+                    api_key: process.env.WEBINARJAM_API_KEY,
+                    member_id: "329839",
+                    webinar_id: "16",
+                    webinar_hash: "kkl3wi7",
                     first_name,
                     email,
+                    // INI WAJIB UNTUK REGISTER
+                    action: "register",
                 }),
             }
         )
 
-        const data = await response.json()
+        const text = await response.text()
 
-        return res.status(200).json(data)
+        let data
+        try {
+            data = JSON.parse(text)
+        } catch {
+            data = text
+        }
+
+        return res.status(200).json({
+            raw: data,
+        })
     } catch (err) {
         console.error(err)
 
