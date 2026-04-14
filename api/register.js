@@ -19,6 +19,12 @@ export default async function handler(req, res) {
 
         const { first_name, email } = body
 
+        if (!first_name || !email) {
+            return res.status(400).json({
+                error: "Missing required fields",
+            })
+        }
+
         const response = await fetch(
             "https://api.webinarjam.com/webinarjam/register",
             {
@@ -29,8 +35,8 @@ export default async function handler(req, res) {
                 },
                 body: new URLSearchParams({
                     api_key: process.env.WEBINARJAM_API_KEY,
-                    webinar_id: "16",
-                    schedule: "16", // 🔥 dari hasil kamu
+                    webinar_id: "20",
+                    schedule: "20", // 🔥 FIXED
                     first_name,
                     email,
                 }),
